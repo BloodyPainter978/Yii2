@@ -1,9 +1,9 @@
 <?php
 
-namespace app\models\queries;
+namespace app\models;
 
 use Yii;
-
+use yii\db\ActiveRecord;
 /**
  * This is the model class for table "special".
  *
@@ -15,8 +15,30 @@ use Yii;
  * @property Gruppa[] $gruppas
  * @property Otdel $otdel
  */
-class Special extends \yii\db\ActiveRecord
+class Special extends ActiveRecord
 {
+    public function loadAndSave($bodyParams){
+        $special = ($this->isNewRecord) ? new Special() : User::findOne($this->special_id);
+        if ($special->load($bodyParams, '') && $special->save()) {
+            if ($this->isNewRecord) {
+                $this->otdel_id = $special->special_id;
+            }
+            if ($this->load($bodyParams, '') && $this->save()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    public function fields(){
+        $fields = parent::fields();
+        return array_merge($fields, [
+            'special_id' => function () { return $this->special_id;},
+            'name' => function () { return $this->name;},
+            'otdel_id' => function () { return $this->otdel_id;},
+            'active' => function () { return $this->active;},
+        ]);
+    }
     /**
      * {@inheritdoc}
      */

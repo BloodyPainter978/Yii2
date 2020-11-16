@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\queries;
+namespace app\models;
 
 use Yii;
 
@@ -8,13 +8,35 @@ use Yii;
  * This is the model class for table "classroom".
  *
  * @property int $classroom_id
- * @property int $name
+ * @property string $name
  * @property int $active
  *
- * @property Shedule[] $shedules
+ * @property Schedule[] $schedules
  */
 class Classroom extends \yii\db\ActiveRecord
 {
+
+    public function loadAndSave($bodyParams){
+        $classroom = ($this->isNewRecord) ? new Classroom() : Classroom::findOne($this->classroom_id);
+        if ($classroom->load($bodyParams, '') && $classroom->save()) {
+            if ($this->isNewRecord) {
+                $this->classroom_id = $classroom->classroom_id;
+            }
+            if ($this->load($bodyParams, '') && $this->save()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    public function fields(){
+        $fields = parent::fields();
+        return array_merge($fields, [
+            'classroom_id' => function () { return $this->classroom_id;},
+            'name' => function () { return $this->name;},
+            'active' => function () { return $this->active;},
+        ]);
+    }
     /**
      * {@inheritdoc}
      */
@@ -30,7 +52,8 @@ class Classroom extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['name', 'active'], 'integer'],
+            [['active'], 'integer'],
+            [['name'], 'string', 'max' => 20],
         ];
     }
 
@@ -47,16 +70,11 @@ class Classroom extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Shedules]].
+     * Gets query for [[Schedules]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getShedules()
-    {
-        return $this->hasMany(Shedule::className(), ['classroom_id' => 'classroom_id']);
-    }
-
-	public function getSchedules()
+    public function getSchedules()
     {
         return $this->hasMany(Schedule::className(), ['classroom_id' => 'classroom_id']);
     }

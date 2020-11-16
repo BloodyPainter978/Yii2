@@ -1,8 +1,9 @@
 <?php
 
-namespace app\models\queries;
+namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "gender".
@@ -12,8 +13,15 @@ use Yii;
  *
  * @property User[] $users
  */
-class Gender extends \yii\db\ActiveRecord
+class Gender extends ActiveRecord
 {
+    public function fields(){
+        $fields = parent::fields();
+        return array_merge($fields, [
+            'gender_id' => function () { return $this->gender_id;},
+            'name' => function () { return $this->name;},
+        ]);
+    }
     /**
      * {@inheritdoc}
      */
@@ -53,5 +61,4 @@ class Gender extends \yii\db\ActiveRecord
     {
         return $this->hasMany(User::className(), ['gender_id' => 'gender_id']);
     }
-
 }

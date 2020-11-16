@@ -4,6 +4,7 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
+
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
@@ -12,45 +13,23 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
         'request' => [
             'enableCsrfCookie' => false,
-	    'parsers' => [
-		'application/json' => 'yii\web\JsonParser',
-		]
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
             'identityClass' => 'app\models\User',
-	    'enableAutoLogin' => false,
-	    'enableSession' => false,
+            'enableAutoLogin' => false,
+            'enableSession' => false,
         ],
-	
-	'urlManager' => [
-		'enablePrettyUrl' => true,
-		'enableStrictParsing' => true,
-		'showScriptName' => false,
-		'rules' => [
-			'' => 'site/index',
-			'login' => 'site/login',
-			'logout' => 'site/logout',
-
-			[
-			'class' => 'yii\rest\UrlRule',
-			'controller' => 'user',
-			'except' => ['delete'],
-			],
-			
-			[
-			'class' => 'yii\rest\UrlRule',
-			'controller' => 'teacher',
-			'except' => ['delete'],
-			],
-				
-			],
-	],
-	
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
@@ -70,20 +49,82 @@ $config = [
                 ],
             ],
         ],
-        'db' => $db,
-
-	'authManager' => [
-		'class' => 'yii\rbac\DbManager',
-	],
-
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                '' => 'site/index',
+                'login' => 'site/login',
+                'logout' => 'site/logout',
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'user',
+                    'except' => ['delete'],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'teacher',
+                    'except' => ['delete'],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'student',
+                    'except' => ['delete'],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'gender',
+                    'except' => ['delete'],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'day',
+                    'except' => ['delete'],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'otdel',
+                    'except' => ['delete'],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'special',
+                    'except' => ['delete'],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'classroom',
+                    'except' => ['delete'],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'lesson-num',
+                    'except' => ['delete'],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'subject',
+                    'except' => ['delete'],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'gruppa',
+                    'except' => ['delete'],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'lesson-plan',
+                    //Исключение убрано
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'schedule',
+                    //Исключение убрано
+                ],
             ],
         ],
-        */
+        'db' => $db,
     ],
     'params' => $params,
 ];

@@ -1,8 +1,9 @@
 <?php
 
-namespace app\models\queries;
+namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "otdel".
@@ -15,8 +16,30 @@ use Yii;
  * @property Subject[] $subjects
  * @property Teacher[] $teachers
  */
-class Otdel extends \yii\db\ActiveRecord
+class Otdel extends ActiveRecord
 {
+    public function loadAndSave($bodyParams){
+        $otdel = ($this->isNewRecord) ? new Otdel() : Otdel::findOne($this->otdel_id);
+        if ($otdel->load($bodyParams, '') && $otdel->save()) {
+            if ($this->isNewRecord) {
+                $this->otdel_id = $otdel->otdel_id;
+            }
+            if ($this->load($bodyParams, '') && $this->save()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    public function fields(){
+        $fields = parent::fields();
+        return array_merge($fields, [
+            'otdel_id' => function () { return $this->otdel_id;},
+            'name' => function () { return $this->name;},
+            'active' => function () { return $this->active;},
+        ]);
+    }
+
     /**
      * {@inheritdoc}
      */

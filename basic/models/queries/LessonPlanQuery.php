@@ -1,13 +1,14 @@
 <?php
 
 namespace app\models\queries;
+use yii\db\ActiveQuery;
 
 /**
- * This is the ActiveQuery class for [[LessonPlan]].
+ * This is the ActiveQuery class for [[\app\models\LessonPlan]].
  *
- * @see LessonPlan
+ * @see \app\models\LessonPlan
  */
-class LessonPlanQuery extends \yii\db\ActiveQuery
+class LessonPlanQuery extends ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +17,7 @@ class LessonPlanQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return LessonPlan[]|array
+     * @return \app\models\LessonPlan[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +26,7 @@ class LessonPlanQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return LessonPlan|array|null
+     * @return \app\models\LessonPlan|array|null
      */
     public function one($db = null)
     {

@@ -1,8 +1,9 @@
 <?php
 
-namespace app\models\queries;
+namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "lesson_num".
@@ -11,10 +12,18 @@ use Yii;
  * @property string $name
  * @property string $time_lesson
  *
- * @property Shedule[] $shedules
+ * @property Schedule[] $schedules
  */
-class LessonNum extends \yii\db\ActiveRecord
+class LessonNum extends ActiveRecord
 {
+    public function fields(){
+        $fields = parent::fields();
+        return array_merge($fields, [
+            'lesson_num_id' => function () { return $this->lesson_num_id;},
+            'name' => function () { return $this->name;},
+            'time_lesson' => function () { return $this->time_lesson;},
+        ]);
+    }
     /**
      * {@inheritdoc}
      */
@@ -48,12 +57,12 @@ class LessonNum extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Shedules]].
+     * Gets query for [[Schedules]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getShedules()
+    public function getSchedules()
     {
-        return $this->hasMany(Shedule::className(), ['lesson_num_id' => 'lesson_num_id']);
+        return $this->hasMany(Schedule::className(), ['lesson_num_id' => 'lesson_num_id']);
     }
 }

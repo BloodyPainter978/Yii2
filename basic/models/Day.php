@@ -1,8 +1,9 @@
 <?php
 
-namespace app\models\queries;
+namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "day".
@@ -10,10 +11,18 @@ use Yii;
  * @property int $day_id
  * @property string $name
  *
- * @property Shedule[] $shedules
+ * @property Schedule[] $schedules
  */
-class Day extends \yii\db\ActiveRecord
+class Day extends ActiveRecord
 {
+
+    public function fields(){
+        $fields = parent::fields();
+        return array_merge($fields, [
+            'day_id' => function () { return $this->day_id;},
+            'name' => function () { return $this->name;},
+        ]);
+    }
     /**
      * {@inheritdoc}
      */
@@ -29,7 +38,7 @@ class Day extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['name'], 'string', 'max' => 20],
+            [['name'], 'string', 'max' => 50],
         ];
     }
 
@@ -45,16 +54,11 @@ class Day extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Shedules]].
+     * Gets query for [[Schedules]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getShedules()
-    {
-        return $this->hasMany(Shedule::className(), ['day_id' => 'day_id']);
-    }
-
-	public function getSchedules()
+    public function getSchedules()
     {
         return $this->hasMany(Schedule::className(), ['day_id' => 'day_id']);
     }

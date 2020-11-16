@@ -1,8 +1,9 @@
 <?php
 
-namespace app\models\queries;
+namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "student".
@@ -14,8 +15,38 @@ use Yii;
  * @property Gruppa $gruppa
  * @property User $user
  */
-class Student extends \yii\db\ActiveRecord
+class Student extends ActiveRecord
 {
+    public function loadAndSave($bodyParams){
+        $user = ($this->isNewRecord) ? new User() :
+            User::findOne($this->user_id);
+        if ($user->load($bodyParams, '') && $user->save()) {
+            if ($this->isNewRecord) {
+                $this->user_id = $user->user_id;
+            }
+            if ($this->load($bodyParams, '') && $this->save()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    public function fields(){
+        $fields = parent::fields();
+        return array_merge($fields, [
+            'lastname' => function () { return $this->user->lastname;},
+            'firstname' => function () { return $this->user->firstname;},
+            'patronymic' => function () { return $this->user->patronymic;},
+            'login' => function () { return $this->user->login;},
+            'gender_id' => function () { return $this->user->gender_id;},
+            'genderName' => function () { return $this->user->gender->name;},
+            'birthday' => function () { return $this->user->birthday;},
+            'roleName' => function () { return $this->user->roleName;},
+            'active' => function () { return $this->user->active;},
+            'otdelName' => function () { return $this->otdel->name;},
+        ]);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -35,6 +66,7 @@ class Student extends \yii\db\ActiveRecord
             [['num_zach'], 'string', 'max' => 10],
             [['user_id'], 'unique'],
             [['gruppa_id'], 'exist', 'skipOnError' => true, 'targetClass' => Gruppa::className(), 'targetAttribute' => ['gruppa_id' => 'gruppa_id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'user_id']],
         ];
     }
 
@@ -53,7 +85,7 @@ class Student extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Gruppa]].
      *
-     * @return \yii\db\ActiveQuery|GruppaQuery
+     * @return \yii\db\ActiveQuery|\app\models\queries\GruppaQuery
      */
     public function getGruppa()
     {
@@ -63,7 +95,7 @@ class Student extends \yii\db\ActiveRecord
     /**
      * Gets query for [[User]].
      *
-     * @return \yii\db\ActiveQuery|UserQuery
+     * @return \yii\db\ActiveQuery|\app\models\queries\UserQuery
      */
     public function getUser()
     {
@@ -72,10 +104,10 @@ class Student extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return StudentQuery the active query used by this AR class.
+     * @return \app\models\queries\StudentQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new StudentQuery(get_called_class());
+        return new \app\models\queries\StudentQuery(get_called_class());
     }
 }
